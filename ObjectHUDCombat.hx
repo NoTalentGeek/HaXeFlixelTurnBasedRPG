@@ -20,7 +20,7 @@ using flixel.util.FlxSpriteUtil;
 
 
 
-class HUDCombat extends FlxTypedGroup<FlxSprite>{
+class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
 
