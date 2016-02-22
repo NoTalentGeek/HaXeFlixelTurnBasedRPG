@@ -61,7 +61,7 @@ class GameOverState extends FlxState{
 
 
 
-    ==================================================
+    /*==================================================*/
     override public function create():Void{
         
         #if !FLX_NO_MOUSE
