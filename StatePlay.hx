@@ -10,7 +10,7 @@ import flixel.util.FlxMath;
 /**
  * A FlxState which can be used for the actual gameplay.
  */
-class PlayState extends FlxState
+class StatePlay extends FlxState
 {
 	/**
 	 * Function that is called up when to state is created to set it up. 

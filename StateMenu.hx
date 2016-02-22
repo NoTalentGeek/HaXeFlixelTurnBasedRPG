@@ -21,7 +21,7 @@ import flixel.util.FlxDestroyUtil;
 
 
 /*Premade game menu.*/
-class MenuState extends FlxState{
+class StateMenu extends FlxState{
 
 
 
@@ -30,6 +30,8 @@ class MenuState extends FlxState{
     private var optionFlxButton:FlxButton;
     private var playFlxButton:FlxButton;
     private var titleFlxText:FlxText;
+
+
 
     #if desktop
 
@@ -41,7 +43,8 @@ class MenuState extends FlxState{
 
 
 
-    /*Initial create function for this MenuState.hx.*/
+    /*==================================================
+    Initial create function for this StateMenu.hx.*/
     override public function create(){
 
         /*Do not start the music if it already playing.*/
@@ -109,12 +112,14 @@ class MenuState extends FlxState{
         super.create();
 
     }
+    /*==================================================*/
     
 
 
 
 
-    /*Function that is called when this state is not used anymore.*/
+    /*==================================================
+    Function that is called when this state is not used anymore.*/
     override public function destroy(){
 
         super.destroy();
@@ -130,33 +135,38 @@ class MenuState extends FlxState{
         #end
 
     }
+    /*==================================================*/
     
 
 
 
 
-    /*Animation when the user clicked play button.*/
-    private function ClickPlayVoid(){
-
-        FlxG.camera.fade(FlxColor.BLACK, .33, false, function(){
-            FlxG.switchState(new PlayState());
-        });
-
-    }
-    
-
-
-
-
-    /*Animation when the user clicked option button.*/
+    /*==================================================
+    Animation when the user clicked option button.*/
     private function ClickOptionVoid(){
 
         FlxG.camera.fade(FlxColor.BLACK, .33, false, function(){
-            FlxG.switchState(new OptionsState());
+            FlxG.switchState(new StateOption());
         });
 
     }
+    /*==================================================*/
 
+    
+
+
+
+
+    /*==================================================
+    Animation when the user clicked play button.*/
+    private function ClickPlayVoid(){
+
+        FlxG.camera.fade(FlxColor.BLACK, .33, false, function(){
+            FlxG.switchState(new StatePlay());
+        });
+
+    }
+    /*==================================================*/
 
 
 

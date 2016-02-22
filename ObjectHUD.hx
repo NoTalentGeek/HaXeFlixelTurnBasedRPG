@@ -35,6 +35,7 @@ class ObjectHUD extends FlxTypedGroup<FlxSprite>{
 
 
 
+    /*==================================================*/
     public function new(){
 
         super();
@@ -72,11 +73,13 @@ class ObjectHUD extends FlxTypedGroup<FlxSprite>{
         });
 
     }
+    /*==================================================*/
     
 
 
 
 
+    /*==================================================*/
     public function UpdateVoid(_healthInt:Int = 0, _moneyInt:Int = 0){
 
         healthFlxText.text = _healthInt + "/3";
@@ -84,6 +87,7 @@ class ObjectHUD extends FlxTypedGroup<FlxSprite>{
         moneyFlxText.x = moneyFlxSprite.x - moneyFlxText.width - 4;
 
     }
+    /*==================================================*/
 
 
 

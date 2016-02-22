@@ -22,6 +22,7 @@ class Main extends Sprite{
 
 
 
+    /*==================================================*/
     public function new(){
 
         var startFullScreenBool:Bool = false;
@@ -44,7 +45,7 @@ class Main extends Sprite{
         /*Create new FlxGame.*/
         addChild(new FlxGame(
             320, 240,
-            MenuState,
+            StateMenu,
             1, 60, 60,
             false,
             startFullScreenBool
@@ -60,6 +61,7 @@ class Main extends Sprite{
         saveFlxSave.close();
 
     }
+    /*==================================================*/
 
 
 

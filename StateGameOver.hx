@@ -25,7 +25,7 @@ using flixel.util.FlxSpriteUtil;
 
 
 
-class GameOverState extends FlxState{
+class StateGameOver extends FlxState{
 
 
 
@@ -45,7 +45,7 @@ class GameOverState extends FlxState{
 
 
     /*==================================================
-    Called from PlayState, this will set our win and score variables.
+    Called from StatePlay, this will set our win and score variables.
     _winBool true if the player beat the boss, false if they died.
     _scoreInt the number of coins collected.*/
     public function new(_winBool:Bool, _scoreInt:Int){
@@ -214,7 +214,7 @@ class GameOverState extends FlxState{
     private function ClickMainMenuVoid():Void{
 
         FlxG.camera.fade(FlxColor.BLACK, .33, false, function(){
-            FlxG.switchState(new MenuState());
+            FlxG.switchState(new StateMenu());
         });
 
     }
