@@ -4,17 +4,34 @@ package;
 
 
 
-import flash.filters.*;
-import flash.geom.*;
-import flixel.*;
-import flixel.addons.effects.*;
-import flixel.group.*;
-import flixel.system.*;
-import flixel.text.*;
-import flixel.tweens.*;
-import flixel.ui.*;
-import flixel.util.*;
+import flash.filters.ColorMatrixFilter;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flixel.addons.effects.chainable.FlxEffectSprite;
+import flixel.addons.effects.chainable.FlxWaveEffect;
+import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.system.FlxSound;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.ui.FlxBar;
+import flixel.util.FlxColor;
+import flixel.util.FlxDestroyUtil;
 using flixel.util.FlxSpriteUtil;
+
+
+
+
+
+enum EnumOutcome{
+    DEFEAT;
+    ESCAPE;
+    NONE;
+    VICTORY;
+}
 
 
 
@@ -27,7 +44,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*GUI for after combat finished.*/
-    public var outcomeEnum          (default, null)     :EnumOutcome;
+    public var outcomeEnumOutcome   (default, null)     :EnumOutcome;
     public var passedObjectEnemy                        :ObjectEnemy;
     public var playerHealthInt      (default, null)     :Int;
 
@@ -35,31 +52,31 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
     /*Sprite for combat HUD interface*/
     private var backFlxSprite       :FlxSprite;
-    private var enemyObject         :ObjectEnemy;
+    private var enemyObjectEnemy    :ObjectEnemy;
     private var playerObjectPlayer  :ObjectPlayer;
 
 
 
     /*Variables to track enemy health.*/
-    private var enemyHealthBarObject    :FlxBar;
+    private var enemyHealthFlxBar       :FlxBar;
     private var enemyHealthInt          :Int;
     private var enemyHealthMaxInt       :Int;
 
 
 
     /*Show the player current health.*/
-    private var playerHealthTextObject:FlxText;
+    private var playerHealthFlxText:FlxText;
 
 
 
     /*FlxText array to show damage dealt and/or missed damage.*/
-    private var damageTextObjectArray:Array<FlxText>;
+    private var damageFlxTextArray:Array<FlxText>;
     
 
 
     /*Others.*/
     private var alphaFloat              :Float = 0;         /*Float number to handle transition float in or float out.*/
-    private var choiceTextObjectArray   :Array<FlxText>;    /*Whether the player want to fight or flee.*/
+    private var choiceFlxTextArray      :Array<FlxText>;    /*Whether the player want to fight or flee.*/
     private var combatFlxSound          :FlxSound;
     private var fledFlxSound            :FlxSound;
     private var hurtFlxSound            :FlxSound;
@@ -71,7 +88,6 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
     private var selectIndexInt          :Int;               /*To know which option is selected.*/
     private var selectFlxSound          :FlxSound;
     private var waitBool                :Bool = true;       /*Flag to be set true if player need to wait for something, for example right after a battle done.*/
-    private var waveFlxSprite           :FlxWaveSprite;     /*This is a cool rendering effect build in HaXeFlixel.*/
     private var winFlxSound             :FlxSound;
 
 
@@ -82,17 +98,11 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
     public function new(){
 
         super();
-        screenFlxSprite = new FlxSprite().makeGraphic(
-            FlxG.width,
-            FlxG.height,
-            FlxColor.TRANSPARENT
-        );
-        waveFlxSprite = new FlxWaveSprite(
-            screenFlxSprite,
-            WaveMode.ALL,
-            4, -1, 4
-        );
-        add(waveFlxSprite);
+        screenFlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
+        var waveFlxWaveEffect = new FlxWaveEffect(FlxWaveMode.ALL, 4, -1, 4);
+        var waveFlxEffectSprite = new FlxEffectSprite(screenFlxSprite, [waveFlxWaveEffect]);
+
+
 
         /*Create a background object.*/
         backFlxSprite = new FlxSprite().makeGraphic(
@@ -100,81 +110,105 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         );
         backFlxSprite.drawRect(1, 1, 118, 44, FlxColor.BLACK);
         backFlxSprite.drawRect(1, 46, 118, 73, FlxColor.BLACK);
-        backFlxSprite.screenCenter(true, true);
-        add(backFlxSprite);
+        backFlxSprite.screenCenter();
+
+
 
         playerObjectPlayer = new ObjectPlayer(backFlxSprite.x + 36, backFlxSprite.y + 16);
         playerObjectPlayer.active = false;
         playerObjectPlayer.animation.frameIndex = 3;
         playerObjectPlayer.facing = FlxObject.RIGHT;
-        add(playerObjectPlayer);
 
-        enemyObject = new ObjectEnemy(0, backFlxSprite.x + 76, backFlxSprite.y + 16);
-        enemyObject.active = false;
-        enemyObject.animation.frameIndex = 3;
-        enemyObject.facing = FlxObject.LEFT;
-        add(enemyObject);
 
-        playerHealthTextObject = new FlxText(0, playerObjectPlayer.y + playerObjectPlayer.height  + 2, 0, "3/3", 8);
-        playerHealthTextObject.alignment = "center";
-        playerHealthTextObject.x = playerObjectPlayer.x + 4 - (playerHealthTextObject.width/2);
-        add(playerHealthTextObject);
 
-        enemyHealthBarObject = new FlxBar(
-            playerObjectPlayer.x - 6,
-            playerHealthTextObject.y,
-            FlxBar.FILL_LEFT_TO_RIGHT,
+        enemyObjectEnemy = new ObjectEnemy(backFlxSprite.x + 76, backFlxSprite.y + 16, 0);
+        enemyObjectEnemy.active = false;
+        enemyObjectEnemy.animation.frameIndex = 3;
+        enemyObjectEnemy.facing = FlxObject.LEFT;
+
+
+
+        playerHealthFlxText = new FlxText(0, playerObjectPlayer.y + playerObjectPlayer.height  + 2, 0, "3/3", 8);
+        playerHealthFlxText.alignment = "center";
+        playerHealthFlxText.x = playerObjectPlayer.x + 4 - (playerHealthFlxText.width/2);
+
+
+
+        enemyHealthFlxBar = new FlxBar(
+            enemyObjectEnemy.x - 6,
+            playerHealthFlxText.y,
+            LEFT_TO_RIGHT,
             20, 10
         );
-        enemyHealthBarObject.createFilledBar(
-            FlxColor.CRIMSON,
+        enemyHealthFlxBar.createFilledBar(
+            0xffdc143c,
             FlxColor.YELLOW,
             true,
             FlxColor.YELLOW
         );
-        add(enemyHealthBarObject);
+
+
 
         /*Create choices and then add them to the group.*/
-        choiceTextObjectArray = new Array<FlxText>();
-        choiceTextObjectArray.push(new FlxText(backFlxSprite.x + 30, backFlxSprite.y + 48, 85, "FIGHT", 22));
-        choiceTextObjectArray.push(new FlxText(backFlxSprite.x + 30, choiceTextObjectArray[0].y + choiceTextObjectArray[0].height +  8, 85, "FLEE", 22));
-        add(choiceTextObjectArray[0]);
-        add(choiceTextObjectArray[1]);
+        choiceFlxTextArray = new Array<FlxText>();
+        choiceFlxTextArray.push(new FlxText(backFlxSprite.x + 30, backFlxSprite.y + 48, 85, "FIGHT", 22));
+        choiceFlxTextArray.push(new FlxText(backFlxSprite.x + 30, choiceFlxTextArray[0].y + choiceFlxTextArray[0].height +  8, 85, "FLEE", 22));
 
         pointerFlxSprite = new FlxSprite(
             backFlxSprite.x + 10,
-            choiceTextObjectArray[0].y + (choiceTextObjectArray[0].height / 2) - 8,
+            choiceFlxTextArray[0].y + (choiceFlxTextArray[0].height / 2) - 8,
             AssetPaths.pointer__png
         );
         pointerFlxSprite.visible = false;
-        add(pointerFlxSprite);
         
-        damageTextObjectArray = new Array<FlxText>();
-        damageTextObjectArray.push(new FlxText(0, 0, 40));
-        damageTextObjectArray.push(new FlxText(0, 0, 40));
-        for(textObject in damageTextObjectArray){
-            textObject.alignment = "center";
-            textObject.color = FlxColor.WHITE;
-            textObject.setBorderStyle(FlxText.BORDER_SHADOW, FlxColor.RED);
-            textObject.visible = false;
-            add(textObject);
-        }
+
+
+        damageFlxTextArray = new Array<FlxText>();
+        damageFlxTextArray.push(new FlxText(0, 0, 40));
+        damageFlxTextArray.push(new FlxText(0, 0, 40));
         
+
+
         resultTextObject = new FlxText(backFlxSprite.x + 2, backFlxSprite.y + 9, 116, "", 18);
         resultTextObject.alignment = "center";
         resultTextObject.color = FlxColor.YELLOW;
-        resultTextObject.setBorderStyle(FlxText.BORDER_SHADOW, FlxColor.GRAY);
+        resultTextObject.setBorderStyle(SHADOW, FlxColor.GRAY);
         resultTextObject.visible = false;
-        add(resultTextObject);
         
+
+
+        add(waveFlxEffectSprite);
+        add(backFlxSprite);
+        add(playerObjectPlayer);
+        add(enemyObjectEnemy);
+        add(playerHealthFlxText);
+        add(enemyHealthFlxBar);
+        for(textObject in damageFlxTextArray){
+            textObject.alignment = "center";
+            textObject.color = FlxColor.WHITE;
+            textObject.setBorderStyle(SHADOW, FlxColor.RED);
+            textObject.visible = false;
+            add(textObject);
+        }
+        add(choiceFlxTextArray[0]);
+        add(choiceFlxTextArray[1]);
+        add(pointerFlxSprite);
+        add(resultTextObject);
+
+
+
         forEach(function(_FlxSprite:FlxSprite){
             _FlxSprite.scrollFactor.set();
             _FlxSprite.alpha = 0;
         });
         
+
+
         active  = false;
         visible = false;
         
+
+
         combatFlxSound      = FlxG.sound.load(AssetPaths.combat__wav);
         fledFlxSound        = FlxG.sound.load(AssetPaths.fled__wav);
         hurtFlxSound        = FlxG.sound.load(AssetPaths.hurt__wav);
@@ -191,17 +225,17 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    override public function destroy():Void {
+    override public function destroy() {
 
         super.destroy();
         
         backFlxSprite           = FlxDestroyUtil.destroy(backFlxSprite);
-        choiceTextObjectArray   = FlxDestroyUtil.destroyArray(choiceTextObjectArray);
-        damageTextObjectArray   = FlxDestroyUtil.destroyArray(damageTextObjectArray);
-        enemyObject             = FlxDestroyUtil.destroy(enemyObject);
+        choiceFlxTextArray      = FlxDestroyUtil.destroyArray(choiceFlxTextArray);
+        damageFlxTextArray      = FlxDestroyUtil.destroyArray(damageFlxTextArray);
+        enemyObjectEnemy        = FlxDestroyUtil.destroy(enemyObjectEnemy);
         passedObjectEnemy       = FlxDestroyUtil.destroy(passedObjectEnemy);
-        playerHealthTextObject  = FlxDestroyUtil.destroy(playerHealthTextObject);
-        playerObjectPlayer            = FlxDestroyUtil.destroy(playerObjectPlayer);
+        playerHealthFlxText     = FlxDestroyUtil.destroy(playerHealthFlxText);
+        playerObjectPlayer      = FlxDestroyUtil.destroy(playerObjectPlayer);
         pointerFlxSprite        = FlxDestroyUtil.destroy(pointerFlxSprite);
         resultTextObject        = FlxDestroyUtil.destroy(resultTextObject);
         
@@ -221,7 +255,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    override public function update():Void{
+    override public function update(_elapsedFloat:Float){
 
         if(!waitBool){
             
@@ -241,10 +275,8 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
                 if(downBool){
 
                     /*If the player presses down, we move the cursor down (with wrapping).*/
-                    if(selectIndexInt == 1)
-                        selectIndexInt = 0;
-                    else
-                        selectIndexInt++;
+                    if(selectIndexInt == 1){ selectIndexInt = 0; }
+                    else{ selectIndexInt++; }
                     selectFlxSound.play();
                     MovePointerVoid();
 
@@ -304,7 +336,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
             #end
         }
 
-        super.update();
+        super.update(_elapsedFloat);
 
     }
     /*==================================================*/
@@ -315,19 +347,13 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function DoneDamageInVoid(_):Void{
+    private function DoneDamageInVoid(_){
 
-        FlxTween.num(
-            1,
-            0,
-            0.66,
-            {
-                complete:DoneDamageOutVoid,
-                ease:FlxEase.circInOut,
-                startDelay:1
-            },
-            UpdateDamageAlphaVoid
-        );
+        FlxTween.num(1, 0, 0.66, { 
+            ease:FlxEase.circInOut, 
+            onComplete:DoneDamageOutVoid,
+            startDelay:1
+        }, UpdateDamageAlphaVoid);
     
     }
     /*==================================================*/
@@ -337,49 +363,33 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function DoneDamageOutVoid(_):Void{
+    private function DoneDamageOutVoid(_){
 
-        damageTextObjectArray[0].text = "";
-        damageTextObjectArray[0].visible = false;
-        damageTextObjectArray[1].text = "";
-        damageTextObjectArray[1].visible = false;
+        damageFlxTextArray[0].text = "";
+        damageFlxTextArray[0].visible = false;
+        damageFlxTextArray[1].text = "";
+        damageFlxTextArray[1].visible = false;
         
-        if(playerHealth <= 0){
+        if(playerHealthInt <= 0){
 
             /*If the player's health is 0, we show the defeat message on the screen and fade it in.*/
             loseFlxSound.play();
-            outcomeEnum = DEFEAT;
+            outcomeEnumOutcome = DEFEAT;
             resultTextObject.alpha = 0;
             resultTextObject.text = "DEFEAT!";
             resultTextObject.visible = true;
-            FlxTween.tween(
-                resultTextObject,
-                { alpha:1 },
-                0.66,
-                {
-                    complete:DoneResultInVoid,
-                    ease:FlxEase.circInOut
-                }
-            );
+            FlxTween.tween(resultTextObject, { alpha:1 }, 0.66, { ease:FlxEase.circInOut, onComplete:DoneResultInVoid });
         
         }
         else if(enemyHealthInt <= 0){
 
             /*If the enemy's health is 0, we show the victory message.*/
-            outcomeEnum = VICTORY;
+            outcomeEnumOutcome = VICTORY;
             resultTextObject.alpha = 0;
             resultTextObject.text = "VICTORY!";
             resultTextObject.visible = true;
             winFlxSound.play();
-            FlxTween.tween(
-                resultTextObject,
-                { alpha:1 },
-                0.66,
-                {
-                    complete:DoneResultInVoid,
-                    ease:FlxEase.circInOut
-                }
-            );
+            FlxTween.tween(resultTextObject, { alpha:1 }, 0.66, { ease:FlxEase.circInOut, onComplete:DoneResultInVoid });
         
         }
         else{
@@ -398,17 +408,11 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function DoneResultInVoid(_):Void{
+    private function DoneResultInVoid(_){
 
         FlxTween.num(
-            1,
-            0,
-            0.66,
-            {
-                complete:FinishFadeOutVoid,
-                ease:FlxEase.circOut,
-                startDelay:1
-            },
+            1, 0, 0.66,
+            { ease:FlxEase.circOut, onComplete:FinishFadeOutVoid, startDelay:1 },
             UpdateDamageAlphaVoid
         );
     
@@ -420,33 +424,33 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function EnemyAttackVoid():Void{
+    private function EnemyAttackVoid(){
 
-        /*Enemy has 30% chance to hit the player.*/
-        if(FlxRandom.chanceRoll(30)){
+        /*ObjectEnemy has 30% chance to hit the player.*/
+        if(FlxG.random.bool(30)){
 
             /*If enemy hits the player give an animation.*/
             hurtFlxSound.play();
-            damageTextObjectArray[0].text = "1";
-            playerHealthInt--;
+            damageFlxTextArray[0].text = "1";
+            playerHealthInt --;
             UpdatePlayerHealthVoid();
             FlxG.camera.flash(FlxColor.WHITE, .2);
             FlxG.camera.shake(0.01, 0.2);
 
         }
-        /*Enemy misses.*/
+        /*ObjectEnemy misses.*/
         else{
 
-            damageTextObjectArray[0].text = "MISS!";
+            damageFlxTextArray[0].text = "MISS!";
             missFlxSound.play();
 
         }
         
         /*Setup combat text and animation.*/
-        damageTextObjectArray[0].x = playerObjectPlayer.x + 2 - (damageTextObjectArray[0].width/2);
-        damageTextObjectArray[0].y = playerObjectPlayer.y + 4 - (damageTextObjectArray[0].height/2);
-        damageTextObjectArray[0].alpha = 0;
-        damageTextObjectArray[0].visible = true;
+        damageFlxTextArray[0].x = playerObjectPlayer.x + 2 - (damageFlxTextArray[0].width/2);
+        damageFlxTextArray[0].y = playerObjectPlayer.y + 4 - (damageFlxTextArray[0].height/2);
+        damageFlxTextArray[0].alpha = 0;
+        damageFlxTextArray[0].visible = true;
 
     }
     /*==================================================*/
@@ -456,7 +460,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function FinishFadeInVoid(_):Void{
+    private function FinishFadeInVoid(_){
 
         active = true;
         pointerFlxSprite.visible = true;
@@ -471,7 +475,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function FinishFadeOutVoid(_):Void{
+    private function FinishFadeOutVoid(_){
 
         active = false;
         visible = false;
@@ -484,7 +488,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    public function InitCombatVoid(_playerHealthInt:Int, _passedObjectEnemy:Enemy):Void{
+    public function InitCombatVoid(_playerHealthInt:Int, _passedObjectEnemy:ObjectEnemy){
 
         #if flash
             screenFlxSprite.pixels.copyPixels(FlxG.camera.buffer, FlxG.camera.buffer.rect, new Point());
@@ -516,10 +520,6 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
                 ]
             )
         );
-        screenFlxSprite.resetFrameBitmapDatas();
-
-        /*Set this flag to true to force the sprite to update during the draw() call.*/
-        screenFlxSprite.dirty = true;
         
         combatFlxSound.play();
         passedObjectEnemy = _passedObjectEnemy;
@@ -527,11 +527,11 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         
         UpdatePlayerHealthVoid();
         
-        enemyHealthBarObject.currentValue = 100;
+        enemyHealthFlxBar.value = 100;
         enemyHealthMaxInt = enemyHealthInt = (passedObjectEnemy.enemyTypeInt + 1) * 2;
-        enemyObject.changeEnemy(passedObjectEnemy.enemyTypeInt);
+        enemyObjectEnemy.ChangeEnemyVoid(passedObjectEnemy.enemyTypeInt);
         
-        outcomeEnum = NONE;
+        outcomeEnumOutcome = NONE;
         pointerFlxSprite.visible = false;
         resultTextObject.text = "";
         resultTextObject.visible = false;
@@ -546,9 +546,9 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
             0, 1, 0.66,
             {
                 ease:FlxEase.circOut,
-                complete:finishFadeIn
+                onComplete:FinishFadeInVoid
             },
-            updateAlpha
+            UpdateAlphaVoid
         );
         
     }
@@ -559,7 +559,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function MakeChoiceVoid():Void{
+    private function MakeChoiceVoid(){
 
         /*Hide the pointer sprite.*/
         pointerFlxSprite.visible = false;
@@ -570,46 +570,33 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
             /*Fight was picked.*/
             case 0:
                 /*The player has a chance of 85% to hit the enemy.*/
-                if(FlxRandom.chanceRoll(85)){
+                if(FlxG.random.bool(85)){
 
                     /*If hit deal one damage to the enemy and then set damage indicator.*/
-                    damageTextObjectArray[1].text = "1";
-                    FlxTween.tween(
-                        enemyObject,
-                        {
-                            x:enemyObject.x + 4
-                        },
-                        0.1,
-                        {
-                            complete:function(_){
-                                FlxTween.tween(
-                                    enemyObject,
-                                    { x:enemyObject.x - 4 },
-                                    0.1
-                                );
-                            }
-                        }
-                    );
+                    damageFlxTextArray[1].text = "1";
+                    FlxTween.tween(enemyObjectEnemy, { x: enemyObjectEnemy.x + 4 }, 0.1, { onComplete: function(_){
+                        FlxTween.tween(enemyObjectEnemy, { x: enemyObjectEnemy.x - 4 }, 0.1);
+                    }});
                     hurtFlxSound.play();
                     enemyHealthInt --;
 
                     /*Change the enemy health bar.*/
-                    enemyHealthBarObject.currentValue = (enemyHealthInt/enemyHealthInt)*100;
+                    enemyHealthFlxBar.value = (enemyHealthInt/enemyHealthMaxInt)*100;
 
                 }
                 /*The player attack is missed.*/
                 else{
 
-                    damageTextObjectArray[1].text = "MISS!";
+                    damageFlxTextArray[1].text = "MISS!";
                     missFlxSound.play();
 
                 }
                 
                 /*Position the damage text over the enemy, and set it's alpha to 0 but it's visible to true (so that it gets draw called on it).*/
-                damageTextObjectArray[1].x = enemyObject.x + 2 - (damageTextObjectArray[1].width/2);
-                damageTextObjectArray[1].y = enemyObject.y + 4 - (damageTextObjectArray[1].height/2);
-                damageTextObjectArray[1].alpha = 0;
-                damageTextObjectArray[1].visible = true;
+                damageFlxTextArray[1].x = enemyObjectEnemy.x + 2 - (damageFlxTextArray[1].width/2);
+                damageFlxTextArray[1].y = enemyObjectEnemy.y + 4 - (damageFlxTextArray[1].height/2);
+                damageFlxTextArray[1].alpha = 0;
+                damageFlxTextArray[1].visible = true;
                 
                 /*If enemy is still alive then it will try to counter player's attack.*/
                 if(enemyHealthInt > 0){
@@ -618,8 +605,8 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
                 
                 /*Setup 2 tweens to allow the damage indicators to fade in and float up from the sprites.*/
                 FlxTween.num(
-                    damageTextObjectArray[0].y,
-                    damageTextObjectArray[0].y - 12,
+                    damageFlxTextArray[0].y,
+                    damageFlxTextArray[0].y - 12,
                     1,
                     { ease:FlxEase.circOut },
                     UpdateDamageYVoid
@@ -629,8 +616,8 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
                     1,
                     0.2,
                     {
-                        complete:DoneDamageInVoid
                         ease:FlxEase.circInOut,
+                        onComplete:DoneDamageInVoid
                     },
                     UpdateDamageAlphaVoid
                 );
@@ -638,11 +625,11 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
             case 1:
                 
                 /*Give player chance of 50% to escape the current battle.*/
-                if(FlxRandom.chanceRoll(50)){
+                if(FlxG.random.bool(50)){
 
                     /*Trigger escape success message with a tween animation.*/
                     fledFlxSound.play();
-                    outcomeEnum = ESCAPE;
+                    outcomeEnumOutcome = ESCAPE;
                     resultTextObject.alpha = 0;
                     resultTextObject.text = "ESCAPED!";
                     resultTextObject.visible = true;
@@ -651,8 +638,8 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
                         { alpha:1 },
                         0.66,
                         {
-                            complete:DoneResultInVoid,
-                            ease:FlxEase.circInOut
+                            ease:FlxEase.circInOut,
+                            onComplete:DoneResultInVoid
                         }
                     );
                 
@@ -660,11 +647,11 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
                 /*Failed to escape.*/
                 else{
 
-                    /*Enemy get a free hit if the player failed to flee.*/
+                    /*ObjectEnemy get a free hit if the player failed to flee.*/
                     EnemyAttackVoid();
                     FlxTween.num(
-                        damageTextObjectArray[0].y,
-                        damageTextObjectArray[0].y - 12,
+                        damageFlxTextArray[0].y,
+                        damageFlxTextArray[0].y - 12,
                         1,
                         { ease:FlxEase.circOut },
                         UpdateDamageYVoid
@@ -674,8 +661,8 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
                         1,
                         0.2,
                         {
-                            complete:DoneDamageInVoid,
-                            ease:FlxEase.circInOut
+                            ease:FlxEase.circInOut,
+                            onComplete:DoneDamageInVoid
                         },
                         UpdateDamageAlphaVoid
                     );
@@ -695,11 +682,11 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function MovePointerVoid():Void{
+    private function MovePointerVoid(){
 
         pointerFlxSprite.y =
-            choiceTextObjectArray[selectIndexInt].y +
-            (choiceTextObjectArray[selectIndexInt].height/2) - 8;
+            choiceFlxTextArray[selectIndexInt].y +
+            (choiceFlxTextArray[selectIndexInt].height/2) - 8;
 
     }
     /*==================================================*/
@@ -709,7 +696,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function UpdateAlphaVoid(_valueFloat:Float):Void{
+    private function UpdateAlphaVoid(_valueFloat:Float){
 
         alphaFloat = _valueFloat;
 
@@ -726,7 +713,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function UpdateDamageAlphaVoid(_valueFloat:Float):Void{ damageTextObjectArray[0].alpha = damageTextObjectArray[1].alpha = _valueFloat; }
+    private function UpdateDamageAlphaVoid(_valueFloat:Float){ damageFlxTextArray[0].alpha = damageFlxTextArray[1].alpha = _valueFloat; }
     /*==================================================*/
     
 
@@ -734,7 +721,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function UpdateDamageYVoid(_valueFloat:Float):Void{ damageTextObjectArray[0].y = damageTextObjectArray[1].y = _valueFloat; }
+    private function UpdateDamageYVoid(_valueFloat:Float){ damageFlxTextArray[0].y = damageFlxTextArray[1].y = _valueFloat; }
     /*==================================================*/
 
 
@@ -742,10 +729,10 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    private function UpdatePlayerHealthVoid():Void{
+    private function UpdatePlayerHealthVoid(){
 
-        playerHealthTextObject.text = Std.string(playerHealthTextObject) + "/3";
-        playerHealthTextObject.x = playerObjectPlayer.x + 4 - (playerHealthTextObject.width/2);
+        playerHealthFlxText.text = playerHealthInt+ "/3";
+        playerHealthFlxText.x = playerObjectPlayer.x + 4 - (playerHealthFlxText.width/2);
 
     }
     /*==================================================*/

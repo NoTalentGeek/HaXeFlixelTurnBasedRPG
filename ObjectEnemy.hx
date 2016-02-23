@@ -14,7 +14,7 @@ using flixel.util.FlxSpriteUtil;
 
 
 
-public class ObjectEnemy extends FlxSprite{
+class ObjectEnemy extends FlxSprite{
 
 
 
@@ -35,9 +35,9 @@ public class ObjectEnemy extends FlxSprite{
 
     /*==================================================*/
     public function new(
-        _enemyTypeInt:Int,
         _xFloat:Float = 0,
-        _yFloat:Float = 0
+        _yFloat:Float = 0,
+        _enemyTypeInt:Int
     ){
 
         super(_xFloat, _yFloat);
@@ -125,9 +125,12 @@ public class ObjectEnemy extends FlxSprite{
             
             switch(facing){
 
-                case (FlxObject.DOWN):animation.play("AnimationDown");
-                case (FlxObject.LEFT, FlxObject.RIGHT):animation.play("AnimationLeftRight");
-                case (FlxObject.UP):animation.play("AnimationUp");
+                case FlxObject.DOWN:
+                    animation.play("AnimationDown");
+                case FlxObject.LEFT, FlxObject.RIGHT:
+                    animation.play("AnimationLeftRight");
+                case FlxObject.UP:
+                    animation.play("AnimationUp");
 
             }
 
@@ -143,18 +146,18 @@ public class ObjectEnemy extends FlxSprite{
 
 
     /*==================================================*/
-    override public function update():Void{
+    override public function update(_elapsedFloat:Float):Void{
         if(isFlickering()){ return; }
 
         objectFiniteStateMachine.UpdateVoid();
-        super.update();
+        super.update(_elapsedFloat);
 
         if(
             (velocity.x != 0 || velocity.y != 0) &&
             touching == FlxObject.NONE
         ){
 
-            stepFlxSound.setPosition(x + _halfWidth, y + height);
+            stepFlxSound.setPosition(x + frameWidth/2 + height);
             stepFlxSound.play();
 
         }
@@ -205,7 +208,7 @@ public class ObjectEnemy extends FlxSprite{
         if(seePlayerBool){ objectFiniteStateMachine.activeStateFunction = ChaseVoid; }
         else if(idleVoidTimerFloat <= 0){
 
-            if(FlxRandom.chanceRoll(1)){
+            if(FlxG.random.bool(1)){
 
                 moveDirectionFloat = -1;
                 velocity.x = velocity.y = 0;
@@ -213,17 +216,14 @@ public class ObjectEnemy extends FlxSprite{
             }
             else{
 
-                moveDirectionFloat = FlxRandom.intRanged(0, 8) * 45;
-                FlxAngle.rotatePoint(
-                    speedFloat * 0.5,
-                    0, 0, 0,
-                    moveDirectionFloat,
-                    velocity
-                );
+                moveDirectionFloat = FlxG.random.int(0, 8) * 45;
                 
+                velocity.set(speedFloat*0.5, 0);
+                velocity.rotate(FlxPoint.weak(), moveDirectionFloat);
+
             }
 
-            idleVoidTimerFloat = FlxRandom.intRanged(1, 4);    
+            idleVoidTimerFloat = FlxG.random.int(1, 4);    
 
         }
         else{ idleVoidTimerFloat -= FlxG.elapsed; }

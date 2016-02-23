@@ -18,7 +18,7 @@ import flixel.util.FlxSave;
 
 
 
-class OptionsState extends FlxState{
+class StateOption extends FlxState{
 
 
 
@@ -53,8 +53,8 @@ class OptionsState extends FlxState{
         backFlxButton = new FlxButton(
             (FlxG.width/2) + 10,
             FlxG.height - 28,
-            "Back",
-            clickBack
+            "Back.",
+            ClickBack
         );
         backFlxButton.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
 
@@ -64,7 +64,7 @@ class OptionsState extends FlxState{
             (FlxG.width/2) - 90,
             FlxG.height - 28,
             "Clear Data.",
-            clickClearData
+            ClickClearData
         );
         clearDataFlxButton.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
 
@@ -74,6 +74,51 @@ class OptionsState extends FlxState{
         titleFlxText = new FlxText(0, 20, 0, "Options.", 22);
         titleFlxText.alignment = CENTER;
         titleFlxText.screenCenter(FlxAxes.X);
+
+
+
+        volumeFlxText = new FlxText(0, titleFlxText.y + titleFlxText.height + 10, 0, "Volume.", 8);
+        volumeFlxText.alignment = CENTER;
+        volumeFlxText.screenCenter(FlxAxes.X);
+
+
+
+        /*Set the volume button to be smaller than the main button.*/
+        volumeDownFlxButton = new FlxButton(
+            8,
+            volumeFlxText.y + volumeFlxText.height + 2,
+            "-",
+            ClickVolumeDown
+        );
+        volumeDownFlxButton.loadGraphic(AssetPaths.button__png, true, 20,20);
+        volumeDownFlxButton.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
+
+
+
+        volumeUpFlxButton = new FlxButton(
+            FlxG.width - 28,
+            volumeDownFlxButton.y,
+            "+",
+            ClickVolumeUp
+        );
+        volumeUpFlxButton.loadGraphic(AssetPaths.button__png, true, 20,20);
+        volumeUpFlxButton.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
+
+
+
+        volumeFlxBar = new FlxBar(
+            volumeDownFlxButton.x + volumeDownFlxButton.width + 4,
+            volumeDownFlxButton.y,
+            LEFT_TO_RIGHT,
+            Std.int(FlxG.width - 64),
+            Std.int(volumeUpFlxButton.height)
+        );
+        volumeFlxBar.createFilledBar(
+            0xff464646,
+            FlxColor.WHITE,
+            true,
+            FlxColor.WHITE
+        );
 
 
 
@@ -93,58 +138,12 @@ class OptionsState extends FlxState{
 
 
 
-        /*Set the volume button to be smaller than the main button.*/
-        volumeDownFlxButton = new FlxButton(
-            8,
-            volumeFlxText.y + volumeFlxText.height + 2,
-            "-",
-            clickVolumeDown
-        );
-        volumeDownFlxButton.loadGraphic(AssetPaths.button__png, true, 20,20);
-        volumeDownFlxButton.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
-
-
-
-        volumeFlxBar = new FlxBar(
-            volumeDownFlxButton.x + volumeDownFlxButton.width + 4,
-            volumeDownFlxButton.y,
-            LEFT_TO_RIGHT,
-            Std.int(FlxG.width - 64),
-            Std.int(volumeUpFlxButton.height)
-        );
-        volumeFlxBar.createFilledBar(
-            0xff464646,
-            FlxColor.WHITE,
-            true,
-            FlxColor.WHITE
-        );
-        add(volumeFlxBar);
-
-
-
-        volumeFlxText = new FlxText(0, titleFlxText.y + titleFlxText.height + 10, 0, "Volume.", 8);
-        volumeFlxText.alignment = CENTER;
-        volumeFlxText.screenCenter(FlxAxes.X);
-
-
-
-        volumeUpFlxButton = new FlxButton(
-            FlxG.width - 28,
-            volumeDownFlxButton.y,
-            "+",
-            clickVolumeUp
-        );
-        volumeUpFlxButton.loadGraphic(AssetPaths.button__png, true, 20,20);
-        volumeUpFlxButton.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
-
-
-
         #if desktop
 
             fullScreenButton = new FlxButton(
                 0,
                 volumeFlxBar.y + volumeFlxBar.height + 8,
-                FlxG.fullscreen ? "FULLSCREEN" : "WINDOWED",
+                FlxG.fullscreen ? "Fullscreen." : "Windowed.",
                 ClickFullScreenVoid
             );
             fullScreenButton.screenCenter(FlxAxes.X);
@@ -159,6 +158,7 @@ class OptionsState extends FlxState{
         add(titleFlxText);
         add(volumeAmountFlxText);
         add(volumeDownFlxButton);
+        add(volumeFlxBar);
         add(volumeFlxText);
         add(volumeUpFlxButton);
 
@@ -218,7 +218,7 @@ class OptionsState extends FlxState{
 
     /*==================================================
     Call back function to go back to the main state.*/
-    private function clickBack(){
+    private function ClickBack(){
 
         saveFlxSave.close();
         FlxG.camera.fade(FlxColor.BLACK, 0.33, false, function(){
@@ -237,7 +237,7 @@ class OptionsState extends FlxState{
     /*==================================================
     Call back function to clear user data so that in the next time the application start
         the appliction does not load the previous session settings.*/
-    private function clickClearData(){
+    private function ClickClearData(){
 
         saveFlxSave.erase();
         FlxG.sound.volume = 0.5;
@@ -252,7 +252,7 @@ class OptionsState extends FlxState{
 
     /*==================================================
     Call back function to lower down the volume.*/
-    private function clickVolumeDown(){
+    private function ClickVolumeDown(){
 
         FlxG.sound.volume       -= 0.1;
         saveFlxSave.data.volume = FlxG.sound.volume;
@@ -267,7 +267,7 @@ class OptionsState extends FlxState{
 
     /*==================================================
     Call back function to increase volume level.*/
-    private function clickVolumeUp(){
+    private function ClickVolumeUp(){
 
         FlxG.sound.volume       += 0.1;
         saveFlxSave.data.volume = FlxG.sound.volume;
@@ -302,7 +302,7 @@ class OptionsState extends FlxState{
         private function ClickFullScreenVoid(){
 
             FlxG.fullscreen             = !FlxG.fullscreen;
-            fullScreenButton.text       = FlxG.fullscreen ? "FULLSCREEN" : "WINDOWED";
+            fullScreenButton.text       = FlxG.fullscreen ? "Fullscreen." : "Windowed.";
             saveFlxSave.data.fullscreen = FlxG.fullscreen;
 
         }

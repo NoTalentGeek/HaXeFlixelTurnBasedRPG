@@ -11,7 +11,7 @@ import flixel.tweens.*;
 
 
 
-class Coin extends FlxSPrite{
+class ObjectCoin extends FlxSprite{
 
 
 
@@ -44,8 +44,8 @@ class Coin extends FlxSPrite{
             },
             0.66,
             {
-                complete:KillFinishVoid,
-                ease:FlxEase.circOut
+                ease:FlxEase.circOut,
+                onComplete:KillFinishVoid
             }
         );
         

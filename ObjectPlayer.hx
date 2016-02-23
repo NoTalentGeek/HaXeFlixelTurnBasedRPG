@@ -7,10 +7,10 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.moveDegreeFloatth.FlxPoint;
+import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 import flixel.ui.FlxButton;
-import flixel.moveDegreeFloatth.FlxAngle;
+import flixel.math.FlxAngle;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 
@@ -18,7 +18,7 @@ import flixel.util.FlxDestroyUtil;
 
 
 
-class Player extends FlxSprite{
+class ObjectPlayer extends FlxSprite{
 
 
 

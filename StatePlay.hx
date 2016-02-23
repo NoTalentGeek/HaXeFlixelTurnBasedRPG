@@ -21,16 +21,16 @@ using flixel.util.FlxSpriteUtil;
 
 
 
-class PlayState extends FlxState{
+class StatePlay extends FlxState{
 
 
 
 
 
     private var coinFlxCoin             :FlxSound;
-    private var coinFlxTypedGroup       :FlxTypedGroup<Coin>;
+    private var coinFlxTypedGroup       :FlxTypedGroup<ObjectCoin>;
     private var endingBool              :Bool;
-    private var enemyFlxTypedGroup      :FlxTypedGroup<Enemy>;
+    private var enemyFlxTypedGroup      :FlxTypedGroup<ObjectEnemy>;
     private var healthInt               :Int = 3;
     private var hudObjectHUD            :ObjectHUD;
     private var hudObjectHUDCombat      :ObjectHUDCombat;
@@ -57,15 +57,10 @@ class PlayState extends FlxState{
     /*=============================================*/
     override public function create(){
         
-        coinFlxTypedGroup   = new FlxTypedGroup<Coin>();
-        enemyFlxTypedGroup  = new FlxTypedGroup<Enemy>();
+        coinFlxTypedGroup   = new FlxTypedGroup<ObjectCoin>();
+        enemyFlxTypedGroup  = new FlxTypedGroup<ObjectEnemy>();
         hudObjectHUD        = new ObjectHUD();
         hudObjectHUDCombat  = new ObjectHUDCombat();
-        
-
-
-        mapFlxOgmoLoader    = new FlxOgmoLoader(AssetPaths.room_001__oel);
-        mapFlxOgmoLoader.loadEntities(PlaceEntityVoid, "Entity");
         
 
 
@@ -74,7 +69,12 @@ class PlayState extends FlxState{
 
 
 
-        wallFlxTilemap      = mapFlxOgmoLoader.loadTilemap(
+        mapFlxOgmoLoader = new FlxOgmoLoader(AssetPaths.room_001__oel);
+        mapFlxOgmoLoader.loadEntities(PlaceEntityVoid, "entities");
+        
+
+
+        wallFlxTilemap = mapFlxOgmoLoader.loadTilemap(
             AssetPaths.tiles__png, 
             16,
             16,
@@ -86,12 +86,12 @@ class PlayState extends FlxState{
         
 
 
+        add(wallFlxTilemap);
         add(coinFlxTypedGroup);
         add(enemyFlxTypedGroup);
+        add(playerObjectPlayer);
         add(hudObjectHUD);
         add(hudObjectHUDCombat);
-        add(playerObjectPlayer);
-        add(wallFlxTilemap);
 
 
 
@@ -168,10 +168,10 @@ class PlayState extends FlxState{
         }
         else if (!hudObjectHUDCombat.visible){
 
-            healthInt = hudObjectHUDCombat.playerHealth;
-            hudObjectHUD.updateHUD(healthInt, moneyInt);
+            healthInt = hudObjectHUDCombat.playerHealthInt;
+            hudObjectHUD.UpdateVoid(healthInt, moneyInt);
 
-            if(hudObjectHUDCombat.outcomeEnum == DEFEAT){
+            if(hudObjectHUDCombat.outcomeEnumOutcome == DEFEAT){
 
                 endingBool = true;
                 FlxG.camera.fade(FlxColor.BLACK, .33, false, DoneFadeOutVoid);
@@ -179,7 +179,7 @@ class PlayState extends FlxState{
             }
             else{
 
-                if(hudObjectHUDCombat.outcomeEnum == VICTORY){
+                if(hudObjectHUDCombat.outcomeEnumOutcome == VICTORY){
 
                     hudObjectHUDCombat.passedObjectEnemy.kill();
 
@@ -216,12 +216,12 @@ class PlayState extends FlxState{
 
 
     /*=============================================*/
-    private function CheckEnemyVisionVoid(_passedObjectEnemy:Enemy){
+    private function CheckEnemyVisionVoid(_passedObjectEnemy:ObjectEnemy){
 
         if(wallFlxTilemap.ray(_passedObjectEnemy.getMidpoint(), playerObjectPlayer.getMidpoint())){
 
             _passedObjectEnemy.seePlayerBool = true;
-            _passedObjectEnemy.playerPos.copyFrom(playerObjectPlayer.getMidpoint());
+            _passedObjectEnemy.playerPositionFlxPoint.copyFrom(playerObjectPlayer.getMidpoint());
 
         }
         else{ _passedObjectEnemy.seePlayerBool = false; }
@@ -234,13 +234,13 @@ class PlayState extends FlxState{
 
 
     /*=============================================*/
-    private function CollisionCoinPlayerVoid(_playerObjectPlayer:ObjectPlayer, _coinObjectCoin:Coin){
+    private function CollisionCoinPlayerVoid(_playerObjectPlayer:ObjectPlayer, _coinObjectCoin:ObjectCoin){
 
         if(_playerObjectPlayer.alive && _playerObjectPlayer.exists && _coinObjectCoin.alive && _coinObjectCoin.exists){
             
             _coinObjectCoin.kill();
             coinFlxCoin.play(true);
-            hudObjectHUD.updateHUD(healthInt, moneyInt);
+            hudObjectHUD.UpdateVoid(healthInt, moneyInt);
             moneyInt ++;
             
         }
@@ -254,7 +254,7 @@ class PlayState extends FlxState{
 
 
     /*=============================================*/
-    private function CollisionEnemyPlayerVoid(_playerObjectPlayer:ObjectPlayer, _enemyObjectEnemy:Enemy){
+    private function CollisionEnemyPlayerVoid(_playerObjectPlayer:ObjectPlayer, _enemyObjectEnemy:ObjectEnemy){
 
         if(
             !_enemyObjectEnemy.isFlickering()   &&
@@ -272,7 +272,7 @@ class PlayState extends FlxState{
 
 
     /*=============================================*/
-    private function DoneFadeOutVoid(){ FlxG.switchState(new GameOverState(winBool, moneyInt)); }
+    private function DoneFadeOutVoid(){ FlxG.switchState(new StateGameOver(winBool, moneyInt)); }
     /*=============================================*/
 
 
@@ -285,21 +285,21 @@ class PlayState extends FlxState{
         var xInt:Int = Std.parseInt(_entityDataXml.get("x"));
         var yInt:Int = Std.parseInt(_entityDataXml.get("y"));
 
-        if(_entityNameString == "Player"){
+        if(_entityNameString == "player"){
 
-            playerObjectPlayer.xInt = xInt;
-            playerObjectPlayer.yInt = yInt;
-
-        }
-        else if(_entityNameString == "Coin"){
-
-            coinFlxTypedGroup.add(new Coin(xInt + 4, yInt + 4));
+            playerObjectPlayer.x = xInt;
+            playerObjectPlayer.y = yInt;
 
         }
-        else if(_entityNameString == "Enemy"){
+        else if(_entityNameString == "coin"){
 
-            enemyFlxTypedGroup.add(new Enemy(xInt + 4, yInt, Std.parseInt(_entityDataXml.get("EnemyType"))));
-        
+            coinFlxTypedGroup.add(new ObjectCoin(xInt + 4, yInt + 4));
+
+        }
+        else if(_entityNameString == "enemy"){
+
+            enemyFlxTypedGroup.add(new ObjectEnemy(xInt + 4, yInt, Std.parseInt(_entityDataXml.get("etype"))));
+
         }
 
     }
@@ -310,13 +310,13 @@ class PlayState extends FlxState{
 
 
     /*=============================================*/
-    private function StartCombatVoid(_enemyObjectEnemy:Enemy){
+    private function StartCombatVoid(_enemyObjectEnemy:ObjectEnemy){
 
         inCombatBool                = true;
         enemyFlxTypedGroup.active   = false;
         playerObjectPlayer.active   = false;
 
-        hudObjectHUDCombat.initCombat(healthInt, _enemyObjectEnemy);
+        hudObjectHUDCombat.InitCombatVoid(healthInt, _enemyObjectEnemy);
 
         #if mobile
 

@@ -50,17 +50,28 @@ class ObjectHUD extends FlxTypedGroup<FlxSprite>{
             healthFlxText.y + (healthFlxText.height/2) - 4,
             AssetPaths.health__png
         );
-        
+
+
+
         moneyFlxText = new FlxText(0, 2, 0, "0", 8);
         moneyFlxText.alignment = RIGHT;
         moneyFlxText.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
-        moneyFlxText.x = moneyFlxSprite.x - moneyFlxText.width - 4;
+        
+
+
         moneyFlxSprite = new FlxSprite(
             FlxG.width - 12,
             moneyFlxText.y + (moneyFlxText.height/2)  - 4,
             AssetPaths.coin__png
         );
+
+
+
+        moneyFlxText.x = moneyFlxSprite.x - moneyFlxText.width - 4;
         
+
+
+
         add(backFlxSprite);
         add(healthFlxSprite);
         add(healthFlxText);
