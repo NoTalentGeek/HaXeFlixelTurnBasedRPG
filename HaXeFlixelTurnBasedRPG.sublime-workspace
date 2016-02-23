@@ -1,0 +1,524 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"enemyheal",
+				"enemyHealthBarObject"
+			],
+			[
+				"eneme",
+				"enemyHealthMaxInt	var"
+			],
+			[
+				"damage",
+				"damageTextObjectArray"
+			],
+			[
+				"reu",
+				"resultTextObject"
+			],
+			[
+				"back",
+				"backSpriteObject"
+			],
+			[
+				"sele",
+				"selectSoundObject	var"
+			],
+			[
+				"pointr",
+				"pointerSpriteObject"
+			],
+			[
+				"enemy",
+				"enemyHealthBarObject"
+			],
+			[
+				"enem",
+				"enemyHealthBarObject	var"
+			],
+			[
+				"player",
+				"playerHealthTextObject"
+			],
+			[
+				"playerH",
+				"playerHealthTextObject	var"
+			],
+			[
+				"Collection",
+				"CollectionFunction	class"
+			],
+			[
+				"test",
+				"textInputExplanationLastIndexInt	Int"
+			],
+			[
+				"eplanatio",
+				"explanationStringArray"
+			],
+			[
+				"explan",
+				"explanationStringArray"
+			],
+			[
+				"textExplanatio",
+				"textInputExplanationStructArray	Array<StructTextInput>"
+			],
+			[
+				"textInput",
+				"textInputObject"
+			],
+			[
+				"textInputExplanation",
+				"textInputExplanationStructArray	var"
+			],
+			[
+				"textInputExpla",
+				"textInputExplanationLastIndexInt"
+			],
+			[
+				"textInputExplanationStr",
+				"textInputExplanationStructArray"
+			],
+			[
+				"textinpout",
+				"textInputExplanationStructArray"
+			],
+			[
+				"MainMennu",
+				"MainMenuButtonObjectArrayAdjustYPosInt(...)	Int"
+			],
+			[
+				"ex",
+				"exitButtonObject"
+			],
+			[
+				"serial",
+				"serialEstablishedBool	var"
+			],
+			[
+				"get",
+				"getDeviceList"
+			],
+			[
+				"port",
+				"portName"
+			],
+			[
+				"Init",
+				"InitSerialConnectionVoid"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "source/HUDCombat.hx",
+			"settings":
+			{
+				"buffer_size": 9529,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "source/ObjectCoin.hx",
+			"settings":
+			{
+				"buffer_size": 732,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 398.0,
+		"last_filter": "sor",
+		"selected_items":
+		[
+			[
+				"sor",
+				"Sort Tabs: Menu"
+			],
+			[
+				"sort",
+				"Sort Tabs: Menu"
+			],
+			[
+				"insatll",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"sot",
+				"Sort Tabs: Menu"
+			]
+		],
+		"width": 455.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelTurnBasedRPG",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelTurnBasedRPG/source"
+	],
+	"file_history":
+	[
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelTurnBasedRPG/source/Coin.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelTurnBasedRPG/source/AssetPaths.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/ObjectTag.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/Main.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/CollectionStruct.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/CollectionPremadeTag.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/CollectionPremade.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/CollectionGlobal.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/CollectionFunction.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Assets/Layout/UIPopupAddObjectMuseum.xml",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/UIPopupAddObjectMuseum.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/UIPopupEditObjectMuseum.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/ObjectMuseum.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Assets/Layout/UIPopupEditObjectMuseum.xml",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/untitled.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/UIPopupAddObjectTag.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/UIPopupEditObjectTag.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelOpenWorldStealthGame/source/ExtendedFlxButton.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelOpenWorldStealthGame/source/PlayState.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelOpenWorldStealthGame/source/MenuState.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeFlixelOpenWorldStealthGame/source/AssetPaths.hx",
+		"/home/notalentgeek/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/JavaProcessingMuseumManager.pde",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING) Bachelor Thesis/Deliverable/DeliverableCode/CArduinoMuseumAudioGuide/RFIDReaderObject.h",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING) Bachelor Thesis/Deliverable/DeliverableCode/CArduinoMuseumAudioGuide/RFIDReaderObject.cpp",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/ObjectVisitor.hx",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING) Bachelor Thesis/Deliverable/DeliverableCode/CArduinoMuseumAudioGuide/CArduinoMuseumAudioGuide.ino",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/project.xml",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/ObjectMuseum.pde",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/ButtonOpenClose.pde",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/ButtonOpenClose.pde",
+		"/home/notalentgeek/app.sh",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/app.sh",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/script.desktop",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/script.desktop.desktop",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/app.desktop",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/LALA.sh",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/JavaProcessingMuseumManager.pde",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/CArduinoMuseumAudioGuide/CArduinoMuseumAudioGuide.ino",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/CArduinoMuseumAudioGuide/RFIDReaderObject.cpp",
+		"/home/notalentgeek/Documents/Mikael/(ONGOING - 50%) Bachelor Thesis/Deliverable/DeliverableCode/JavaProcessingMuseumManager/run.txt",
+		"/home/notalentgeek/Documents/Draft Specification 2.txt",
+		"/home/notalentgeek/Documents/Draft Specification 1.txt",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/ObjectGeneratorSentence.hx",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/HaXeOpenFLMuseumManager.hxproj",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/ToDoList.txt",
+		"/home/notalentgeek/Documents/Mikael/Programming/HaXeOpenFLMuseumManager/Source/CollectionTagGeneral.hx"
+	],
+	"find":
+	{
+		"height": 38.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"UpdateAlphaVoid",
+			"UpdateAlphaVoid\n",
+			"screenSpriteObject",
+			"Arrray",
+			"static ",
+			"trace",
+			"textInputExplanationStructArray.remove",
+			"textInputExplanationLastIndexInt",
+			"\" \"",
+			"AddThisToArray",
+			"selectParentNameFullListSelectorObject",
+			"Set",
+			"_collectionGlobalObject, ",
+			"explanation",
+			"textInputExplanationStructArray",
+			"GetTag",
+			"tagAmountInt",
+			"UIPopupEditObjectMuseum_InputExplanation_",
+			"listSelectorTagStructArray",
+			"textInputExplanationStructArray",
+			"inputExplanation",
+			"listSelectorTagStructArray",
+			"tagAmountInt",
+			"+ 1",
+			"+ `",
+			"textInputExplanationLastIndexInt",
+			"listSelectorTagObject",
+			"textInputExplanationObject",
+			"StructTextInput",
+			"StructTextInputTag",
+			"StructListSelector",
+			"StructListSelectorTag",
+			"StructTextInput",
+			"StructTextInputTag",
+			"listSelectorTagStructArray",
+			"textInputExplanationStructArray",
+			"listSelectorTagStructArray",
+			"ExtendedFlxButtonObjectArray",
+			"FlxButtonExtended",
+			"flxButtonExtendsObjectArray",
+			"they",
+			"their",
+			"people",
+			"audioFileIndexMaxInt",
+			"explanationCurrentString",
+			"explanation",
+			"indexGlobalInt",
+			"add",
+			"sendInstructionToArduinoStringList",
+			"writeBytes",
+			"add",
+			"exhibitionCurrentObject",
+			"mode",
+			"exhibitionReceiveIndexInt",
+			"MoveExhibitionVoid",
+			"MoveExhibitionVoid\n",
+			"lastMatchedIndexInt",
+			"lastMatchedIndexInt\n",
+			"playerIndexInt",
+			"MOveExhibition",
+			"serialEstablishedBool",
+			"serialIndexCounterInt",
+			"serialConnectionEstablishedBool",
+			"add",
+			"Read",
+			"InitSerial",
+			"Serial",
+			"circle",
+			"LoadVoid",
+			"Serial",
+			"exhibition",
+			"serial",
+			"Serial",
+			"()[(",
+			"Serial",
+			"TOPRE.",
+			"CHERRY.",
+			"- ",
+			"tagObject"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"Array",
+			"",
+			"_collectionGlobalObject, explanationGenericStringArray, ",
+			"StructTextInput",
+			"StructListSelector",
+			"StructTextInput",
+			"extendedFlxButtonObjectArray",
+			"ExtendedFlxButton",
+			"flxButtonExtendedObjectArray",
+			"he/sher",
+			"his/her",
+			"visitor",
+			"push",
+			"sendInstructionToArduinoStringArray",
+			"serialIndexInt",
+			"serialEstablishedBool",
+			"TOPRE:",
+			"CHERRY:",
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "source/HUDCombat.hx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9529,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9137,
+								9137
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"sorttabs_lastactivated": 1455592991.84,
+							"syntax": "Packages/Haxe/Haxe.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3894.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "source/ObjectCoin.hx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 732,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								704,
+								704
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"sorttabs_lastactivated": 1455584149.53,
+							"syntax": "Packages/Haxe/Haxe.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 408.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 37.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "HaXeFlixelTurnBasedRPG.sublime-project",
+	"replace":
+	{
+		"height": 72.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 50.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
