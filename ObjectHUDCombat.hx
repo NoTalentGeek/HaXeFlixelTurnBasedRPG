@@ -28,15 +28,15 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
     /*GUI for after combat finished.*/
     public var outcomeEnum          (default, null)     :EnumOutcome;
-    public var passedEnemyObject                        :ObjectEnemy;
+    public var passedObjectEnemy                        :ObjectEnemy;
     public var playerHealthInt      (default, null)     :Int;
 
 
 
     /*Sprite for combat HUD interface*/
-    private var backFlxSprite   :FlxSprite;
-    private var enemyObject     :ObjectEnemy;
-    private var playerObject    :ObjectPlayer;
+    private var backFlxSprite       :FlxSprite;
+    private var enemyObject         :ObjectEnemy;
+    private var playerObjectPlayer  :ObjectPlayer;
 
 
 
@@ -103,11 +103,11 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         backFlxSprite.screenCenter(true, true);
         add(backFlxSprite);
 
-        playerObject = new ObjectPlayer(backFlxSprite.x + 36, backFlxSprite.y + 16);
-        playerObject.active = false;
-        playerObject.animation.frameIndex = 3;
-        playerObject.facing = FlxObject.RIGHT;
-        add(playerObject);
+        playerObjectPlayer = new ObjectPlayer(backFlxSprite.x + 36, backFlxSprite.y + 16);
+        playerObjectPlayer.active = false;
+        playerObjectPlayer.animation.frameIndex = 3;
+        playerObjectPlayer.facing = FlxObject.RIGHT;
+        add(playerObjectPlayer);
 
         enemyObject = new ObjectEnemy(0, backFlxSprite.x + 76, backFlxSprite.y + 16);
         enemyObject.active = false;
@@ -115,13 +115,13 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         enemyObject.facing = FlxObject.LEFT;
         add(enemyObject);
 
-        playerHealthTextObject = new FlxText(0, playerObject.y + playerObject.height  + 2, 0, "3/3", 8);
+        playerHealthTextObject = new FlxText(0, playerObjectPlayer.y + playerObjectPlayer.height  + 2, 0, "3/3", 8);
         playerHealthTextObject.alignment = "center";
-        playerHealthTextObject.x = playerObject.x + 4 - (playerHealthTextObject.width/2);
+        playerHealthTextObject.x = playerObjectPlayer.x + 4 - (playerHealthTextObject.width/2);
         add(playerHealthTextObject);
 
         enemyHealthBarObject = new FlxBar(
-            playerObject.x - 6,
+            playerObjectPlayer.x - 6,
             playerHealthTextObject.y,
             FlxBar.FILL_LEFT_TO_RIGHT,
             20, 10
@@ -199,9 +199,9 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         choiceTextObjectArray   = FlxDestroyUtil.destroyArray(choiceTextObjectArray);
         damageTextObjectArray   = FlxDestroyUtil.destroyArray(damageTextObjectArray);
         enemyObject             = FlxDestroyUtil.destroy(enemyObject);
-        passedEnemyObject       = FlxDestroyUtil.destroy(passedEnemyObject);
+        passedObjectEnemy       = FlxDestroyUtil.destroy(passedObjectEnemy);
         playerHealthTextObject  = FlxDestroyUtil.destroy(playerHealthTextObject);
-        playerObject            = FlxDestroyUtil.destroy(playerObject);
+        playerObjectPlayer            = FlxDestroyUtil.destroy(playerObjectPlayer);
         pointerFlxSprite        = FlxDestroyUtil.destroy(pointerFlxSprite);
         resultTextObject        = FlxDestroyUtil.destroy(resultTextObject);
         
@@ -348,7 +348,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
             /*If the player's health is 0, we show the defeat message on the screen and fade it in.*/
             loseFlxSound.play();
-            outcome = DEFEAT;
+            outcomeEnum = DEFEAT;
             resultTextObject.alpha = 0;
             resultTextObject.text = "DEFEAT!";
             resultTextObject.visible = true;
@@ -366,7 +366,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         else if(enemyHealthInt <= 0){
 
             /*If the enemy's health is 0, we show the victory message.*/
-            outcome = VICTORY;
+            outcomeEnum = VICTORY;
             resultTextObject.alpha = 0;
             resultTextObject.text = "VICTORY!";
             resultTextObject.visible = true;
@@ -443,8 +443,8 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         }
         
         /*Setup combat text and animation.*/
-        damageTextObjectArray[0].x = playerObject.x + 2 - (damageTextObjectArray[0].width/2);
-        damageTextObjectArray[0].y = playerObject.y + 4 - (damageTextObjectArray[0].height/2);
+        damageTextObjectArray[0].x = playerObjectPlayer.x + 2 - (damageTextObjectArray[0].width/2);
+        damageTextObjectArray[0].y = playerObjectPlayer.y + 4 - (damageTextObjectArray[0].height/2);
         damageTextObjectArray[0].alpha = 0;
         damageTextObjectArray[0].visible = true;
 
@@ -484,7 +484,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
 
 
     /*==================================================*/
-    public function InitCombatVoid(_playerHealthInt:Int, _passedEnemyObject:Enemy):Void{
+    public function InitCombatVoid(_playerHealthInt:Int, _passedObjectEnemy:Enemy):Void{
 
         #if flash
             screenFlxSprite.pixels.copyPixels(FlxG.camera.buffer, FlxG.camera.buffer.rect, new Point());
@@ -522,14 +522,14 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
         screenFlxSprite.dirty = true;
         
         combatFlxSound.play();
-        passedEnemyObject = _passedEnemyObject;
+        passedObjectEnemy = _passedObjectEnemy;
         playerHealthInt = _playerHealthInt;
         
         UpdatePlayerHealthVoid();
         
         enemyHealthBarObject.currentValue = 100;
-        enemyHealthMaxInt = enemyHealthInt = (passedEnemyObject.enemyTypeInt + 1) * 2;
-        enemyObject.changeEnemy(passedEnemyObject.enemyTypeInt);
+        enemyHealthMaxInt = enemyHealthInt = (passedObjectEnemy.enemyTypeInt + 1) * 2;
+        enemyObject.changeEnemy(passedObjectEnemy.enemyTypeInt);
         
         outcomeEnum = NONE;
         pointerFlxSprite.visible = false;
@@ -745,7 +745,7 @@ class ObjectHUDCombat extends FlxTypedGroup<FlxSprite>{
     private function UpdatePlayerHealthVoid():Void{
 
         playerHealthTextObject.text = Std.string(playerHealthTextObject) + "/3";
-        playerHealthTextObject.x = playerObject.x + 4 - (playerHealthTextObject.width/2);
+        playerHealthTextObject.x = playerObjectPlayer.x + 4 - (playerHealthTextObject.width/2);
 
     }
     /*==================================================*/

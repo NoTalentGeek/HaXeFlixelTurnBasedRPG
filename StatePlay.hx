@@ -54,6 +54,7 @@ class PlayState extends FlxState{
 
 
 
+    /*=============================================*/
     override public function create(){
         
         coinFlxTypedGroup   = new FlxTypedGroup<Coin>();
@@ -117,7 +118,168 @@ class PlayState extends FlxState{
         super.create();
 
     }
-    
+    /*=============================================*/
+
+
+
+
+
+    /*=============================================*/
+    override public function destroy(){
+
+        super.destroy();
+
+        coinFlxCoin             = FlxDestroyUtil.destroy(coinFlxCoin);
+        coinFlxTypedGroup       = FlxDestroyUtil.destroy(coinFlxTypedGroup);
+        enemyFlxTypedGroup      = FlxDestroyUtil.destroy(enemyFlxTypedGroup);
+        hudObjectHUD            = FlxDestroyUtil.destroy(hudObjectHUD);
+        hudObjectHUDCombat      = FlxDestroyUtil.destroy(hudObjectHUDCombat);
+        playerObjectPlayer      = FlxDestroyUtil.destroy(playerObjectPlayer);
+        wallFlxTilemap          = FlxDestroyUtil.destroy(wallFlxTilemap);
+
+        #if mobile
+        
+            virtualPadFlxVirtualPad = FlxDestroyUtil.destroy(virtualPadFlxVirtualPad);
+
+        #end
+
+    }
+    /*=============================================*/
+
+
+
+
+
+    /*=============================================*/
+    override public function update(_elapsedFloat:Float){
+
+        super.update(_elapsedFloat);
+
+        if(endingBool){ return; }
+        
+        if (!inCombatBool){
+
+            FlxG.collide(playerObjectPlayer, wallFlxTilemap);
+            FlxG.overlap(playerObjectPlayer, coinFlxTypedGroup, CollisionCoinPlayerVoid);
+            FlxG.collide(enemyFlxTypedGroup, wallFlxTilemap);
+            enemyFlxTypedGroup.forEachAlive(CheckEnemyVisionVoid);
+            FlxG.overlap(playerObjectPlayer, enemyFlxTypedGroup, CollisionEnemyPlayerVoid);
+
+        }
+        else if (!hudObjectHUDCombat.visible){
+
+            healthInt = hudObjectHUDCombat.playerHealth;
+            hudObjectHUD.updateHUD(healthInt, moneyInt);
+
+            if(hudObjectHUDCombat.outcomeEnum == DEFEAT){
+
+                endingBool = true;
+                FlxG.camera.fade(FlxColor.BLACK, .33, false, DoneFadeOutVoid);
+
+            }
+            else{
+
+                if(hudObjectHUDCombat.outcomeEnum == VICTORY){
+
+                    hudObjectHUDCombat.passedObjectEnemy.kill();
+
+                    if(hudObjectHUDCombat.passedObjectEnemy.enemyTypeInt == 1){
+                        endingBool = true;
+                        winBool = true;
+                        FlxG.camera.fade(FlxColor.BLACK, .33, false, DoneFadeOutVoid);
+                    }
+
+                }
+                else{ hudObjectHUDCombat.passedObjectEnemy.flicker(); }
+
+
+
+                #if mobile
+                    virtualPadFlxVirtualPad.visible = true;
+                #end
+
+
+
+                enemyFlxTypedGroup.active   = true;
+                inCombatBool                = false;
+                playerObjectPlayer.active   = true;
+
+            }
+
+        }
+
+    }
+    /*=============================================*/
+
+
+
+
+
+    /*=============================================*/
+    private function CheckEnemyVisionVoid(_passedObjectEnemy:Enemy){
+
+        if(wallFlxTilemap.ray(_passedObjectEnemy.getMidpoint(), playerObjectPlayer.getMidpoint())){
+
+            _passedObjectEnemy.seePlayerBool = true;
+            _passedObjectEnemy.playerPos.copyFrom(playerObjectPlayer.getMidpoint());
+
+        }
+        else{ _passedObjectEnemy.seePlayerBool = false; }
+
+    }
+    /*=============================================*/
+
+
+
+
+
+    /*=============================================*/
+    private function CollisionCoinPlayerVoid(_playerObjectPlayer:ObjectPlayer, _coinObjectCoin:Coin){
+
+        if(_playerObjectPlayer.alive && _playerObjectPlayer.exists && _coinObjectCoin.alive && _coinObjectCoin.exists){
+            
+            _coinObjectCoin.kill();
+            coinFlxCoin.play(true);
+            hudObjectHUD.updateHUD(healthInt, moneyInt);
+            moneyInt ++;
+            
+        }
+
+    }
+    /*=============================================*/
+
+
+
+
+
+
+    /*=============================================*/
+    private function CollisionEnemyPlayerVoid(_playerObjectPlayer:ObjectPlayer, _enemyObjectEnemy:Enemy){
+
+        if(
+            !_enemyObjectEnemy.isFlickering()   &&
+            _enemyObjectEnemy.alive             &&
+            _enemyObjectEnemy.exists            &&
+            _playerObjectPlayer.alive           &&
+            _playerObjectPlayer.exists
+        ){ StartCombatVoid(_enemyObjectEnemy); }
+
+    }
+    /*=============================================*/
+
+
+
+
+
+    /*=============================================*/
+    private function DoneFadeOutVoid(){ FlxG.switchState(new GameOverState(winBool, moneyInt)); }
+    /*=============================================*/
+
+
+
+
+
+    /*=============================================*/
     private function PlaceEntityVoid(_entityNameString:String, _entityDataXml:Xml){
 
         var xInt:Int = Std.parseInt(_entityDataXml.get("x"));
@@ -141,128 +303,31 @@ class PlayState extends FlxState{
         }
 
     }
-    
-
-    === TO BE CONTINUED ===
+    /*=============================================*/
 
 
-    /**
-     * Function that is called when this state is destroyed - you might want to 
-     * consider setting all objects this state uses to null to help garbage collection.
-     */
-    override public function destroy()
-    {
-        super.destroy();
-        playerObjectPlayer = FlxDestroyUtil.destroy(playerObjectPlayer);
-        wallFlxTilemap = FlxDestroyUtil.destroy(wallFlxTilemap);
-        coinFlxTypedGroup = FlxDestroyUtil.destroy(coinFlxTypedGroup);
-        enemyFlxTypedGroup = FlxDestroyUtil.destroy(enemyFlxTypedGroup);
-        hudObjectHUD = FlxDestroyUtil.destroy(hudObjectHUD);
-        hudObjectHUDCombat = FlxDestroyUtil.destroy(hudObjectHUDCombat);
-        coinFlxCoin = FlxDestroyUtil.destroy(coinFlxCoin);
+
+
+
+    /*=============================================*/
+    private function StartCombatVoid(_enemyObjectEnemy:Enemy){
+
+        inCombatBool                = true;
+        enemyFlxTypedGroup.active   = false;
+        playerObjectPlayer.active   = false;
+
+        hudObjectHUDCombat.initCombat(healthInt, _enemyObjectEnemy);
+
         #if mobile
-        virtualPadFlxVirtualPad = FlxDestroyUtil.destroy(virtualPadFlxVirtualPad);
-        #end
-    }
 
-    /**
-     * Function that is called once every frame.
-     */
-    override public function update(elapsed:Float)
-    {
-        super.update(elapsed);
+            virtualPadFlxVirtualPad.visible = false;
 
-        if(endingBool)
-        {
-            return;
-        }
-        
-        if (!inCombatBool)
-        {
-            FlxG.collide(playerObjectPlayer, wallFlxTilemap);
-            FlxG.overlap(playerObjectPlayer, coinFlxTypedGroup, playerTouchCoin);
-            FlxG.collide(enemyFlxTypedGroup, wallFlxTilemap);
-            enemyFlxTypedGroup.forEachAlive(checkEnemyVision);
-            FlxG.overlap(playerObjectPlayer, enemyFlxTypedGroup, playerTouchEnemy);
-        }
-        else if (!hudObjectHUDCombat.visible)
-        {
-            healthInt = hudObjectHUDCombat.playerHealth;
-            hudObjectHUD.updateHUD(healthInt, moneyInt);
-            if(hudObjectHUDCombat.outcome == DEFEAT)
-            {
-                endingBool = true;
-                FlxG.camera.fade(FlxColor.BLACK, .33, false, doneFadeOut);
-            }
-            else
-            {
-                if(hudObjectHUDCombat.outcome == VICTORY)
-                {
-                    hudObjectHUDCombat.e.kill();
-                    if(hudObjectHUDCombat.e.etype == 1)
-                    {
-                        winBool = true;
-                        endingBool = true;
-                        FlxG.camera.fade(FlxColor.BLACK, .33, false, doneFadeOut);
-                    }
-                }
-                else 
-                {
-                    hudObjectHUDCombat.e.flicker();
-                }
-                #if mobile
-                virtualPadFlxVirtualPad.visible = true;
-                #end
-                inCombatBool = false;
-                playerObjectPlayer.active = true;
-                enemyFlxTypedGroup.active = true;
-            }
-        }
-    }
-    
-    private function doneFadeOut() 
-    {
-        FlxG.switchState(new GameOverState(winBool, moneyInt));
-    }
-    
-    private function playerTouchEnemy(P:ObjectPlayer, E:Enemy)
-    {
-        if(P.alive && P.exists && E.alive && E.exists && !E.isFlickering())
-        {
-            startCombat(E);
-        }
-    }
-    
-    private function startCombat(E:Enemy)
-    {
-        inCombatBool = true;
-        playerObjectPlayer.active = false;
-        enemyFlxTypedGroup.active = false;
-        hudObjectHUDCombat.initCombat(healthInt, E);
-        #if mobile
-        virtualPadFlxVirtualPad.visible = false;
         #end
+
     }
-    
-    private function checkEnemyVision(e:Enemy)
-    {
-        if(wallFlxTilemap.ray(e.getMidpoint(), playerObjectPlayer.getMidpoint()))
-        {
-            e.seesPlayer = true;
-            e.playerPos.copyFrom(playerObjectPlayer.getMidpoint());
-        }
-        else
-            e.seesPlayer = false;       
-    }
-    
-    private function playerTouchCoin(P:ObjectPlayer, C:Coin)
-    {
-        if(P.alive && P.exists && C.alive && C.exists)
-        {
-            coinFlxCoin.play(true);
-            moneyInt++;
-            hudObjectHUD.updateHUD(healthInt, moneyInt);
-            C.kill();
-        }
-    }
+    /*=============================================*/
+
+
+
+
 }
